@@ -7,19 +7,30 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// CORS - Allow localhost:5500 (Live Server)
+// CORS - Allow Localhost (5500 + 5501) + GitHub Pages
 app.use(cors({
-    origin: ['http://127.0.0.1:5500', 'http://localhost:5500'],
-    methods: ['GET', 'POST'],
+    origin: [
+        'http://127.0.0.1:5500',
+        'http://127.0.0.1:5501',  // Tera current port
+        'http://localhost:5500',
+        'http://localhost:5501',
+        'https://anurag-soni-8479.github.io',  // Tera GitHub Pages
+        'https://anurag-soni-8479.github.io/portfolio-new'  // Agar subfolder hai
+    ],
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
     credentials: false
 }));
+
+// Handle preflight
+app.options('*', cors());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Test Route
+// Test Route - Render pe yeh dikhega
 app.get('/', (req, res) => {
-    res.send('Backend is live on localhost:5000');
+    res.send('Backend is LIVE on Render! CORS enabled.');
 });
 
 // Send Email Route
@@ -46,7 +57,7 @@ app.post('/sendemail', async (req, res) => {
         replyTo: email,
         subject: `Portfolio: ${subject || 'New Message'}`,
         html: `
-            <h3>New Contact Form Message</h3>
+            <h3>New Message from Portfolio</h3>
             <p><strong>Name:</strong> ${fullName}</p>
             <p><strong>Email:</strong> ${email}</p>
             <p><strong>Phone:</strong> ${phone || 'N/A'}</p>
@@ -54,7 +65,7 @@ app.post('/sendemail', async (req, res) => {
             <p><strong>Message:</strong></p>
             <p>${message}</p>
             <hr>
-            <small>Sent from localhost portfolio.</small>
+            <small>Sent from live portfolio.</small>
         `
     };
 
@@ -63,10 +74,10 @@ app.post('/sendemail', async (req, res) => {
         res.status(200).json({ message: "Message sent successfully!" });
     } catch (error) {
         console.error("Email Error:", error);
-        res.status(500).json({ message: "Failed to send email.", error: error.message });
+        res.status(500).json({ message: "Failed to send.", error: error.message });
     }
 });
 
 app.listen(port, () => {
-    console.log(`Backend running at: http://localhost:${port}`);
+    console.log(`Server running on port ${port}`);
 });
