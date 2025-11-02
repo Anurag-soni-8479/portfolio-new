@@ -489,7 +489,8 @@
             const data = { fullName, email, phone, subject, message };
 
             try {
-                const response = await fetch("https://portfolio-new-lcim.onrender.com/sendemail", {
+                const bUrl = "https://portfolio-new-lcim.onrender.com/sendemail";
+                const response = await fetch(bUrl, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(data)
